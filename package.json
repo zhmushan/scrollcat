@@ -1,0 +1,28 @@
+{
+  "name": "scrollcat",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mod.js",
+      "require": "./dist/mod.cjs"
+    }
+  },
+  "main": "./dist/mod.js",
+  "types": "./dist/mod.d.ts",
+  "files": [
+    "dist"
+  ],
+  "description": "I want to catch the best scene of my life. The browser wants to, too.",
+  "scripts": {
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "build": "tsup src/mod.ts --format esm,cjs --clean",
+    "build:prod": "pnpm build --dts --minify",
+    "dev": "pnpm build --watch"
+  },
+  "devDependencies": {
+    "tsup": "^6.2.2",
+    "typescript": "^4.7.4"
+  }
+}
