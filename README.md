@@ -17,6 +17,13 @@ If you are really ready to waste time on this crappy work, please run:
 npm install scrollcat
 ```
 
+Or if you use Deno, don't worry, first choose one of your favorite CDNs (e.g.
+[unpkg](https://unpkg.com/browse/scrollcat/dist/)). All the compiled files are
+placed in `dist/`, and you only need to care about `mod.js` and `mod.d.ts` in
+them. If you don't know yet how Deno specifies its type declaration files when
+importing JS modules, please check
+[this documentation](https://deno.land/manual@v1.25.0/typescript/types#providing-types-when-importing).
+
 ## Usage
 
 ```js
