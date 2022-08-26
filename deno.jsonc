@@ -1,4 +1,5 @@
 {
+  "importMap": "./src/importmap.json",
   "fmt": {
     "files": {
       "exclude": [

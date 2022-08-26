@@ -2,8 +2,9 @@
 
 > _I want to **cat**ch the best scene of my life. The browser wants to, too._
 
-[![tag](https://img.shields.io/github/tag/zhmushan/scrollcat.svg)](https://github.com/zhmushan/scrollcat)
-[![Build Status](https://github.com/zhmushan/scrollcat/workflows/ci/badge.svg?branch=master)](https://github.com/zhmushan/scrollcat/actions)
+[![version](https://img.shields.io/github/tag/zhmushan/scrollcat.svg)](https://github.com/zhmushan/scrollcat)
+[![ci](https://github.com/zhmushan/scrollcat/workflows/ci/badge.svg?branch=master)](https://github.com/zhmushan/scrollcat/actions)
+[![api](https://img.shields.io/badge/api-doc-blue)](https://doc.deno.land/https://deno.land/x/scrollcat/src/mod.ts)
 [![license](https://img.shields.io/github/license/zhmushan/scrollcat.svg)](https://github.com/zhmushan/scrollcat)
 
 There are too many good works in the world that are a hundred times better than

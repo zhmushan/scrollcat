@@ -9,16 +9,17 @@
     }
   },
   "main": "./dist/mod.js",
-  "types": "./dist/mod.d.ts",
+  "types": "./src/mod.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "description": "I want to catch the best scene of my life. The browser wants to, too.",
   "scripts": {
     "fmt": "deno fmt",
     "lint": "deno lint",
     "build": "tsup src/mod.ts --format esm,cjs --clean",
-    "build:prod": "pnpm build --dts --minify",
+    "build:prod": "pnpm build --dts",
     "dev": "pnpm build --watch"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { Deferred, deferred } from "./deferred";
+import { type Deferred, deferred } from "./deferred";
 
 export default class Queue<T> {
   #list: Array<Deferred<T>>;

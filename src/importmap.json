@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "./deferred": "./deferred.ts",
+    "./queue": "./queue.ts",
+    "./scene": "./scene.ts",
+    "./scroller": "./scroller.ts",
+    "./utils": "./utils.ts"
+  }
+}
