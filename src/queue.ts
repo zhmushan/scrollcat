@@ -5,6 +5,7 @@ export default class Queue<T> {
   #limit: number;
   #top = 0;
   #bottom = 0;
+  #freed = false;
 
   #move(n: number): number {
     return n === this.#limit ? 0 : n + 1;
@@ -17,7 +18,7 @@ export default class Queue<T> {
   }
 
   async *[Symbol.asyncIterator](): AsyncIterableIterator<T> {
-    for (;;) {
+    for (; !this.#freed;) {
       yield this.pop();
     }
   }
@@ -32,5 +33,10 @@ export default class Queue<T> {
     this.#list[this.#bottom].resolve(data);
     this.#bottom = this.#move(this.#bottom);
     this.#list[this.#bottom] = deferred();
+  }
+
+  free(): void {
+    this.#freed = true;
+    this.#list[this.#bottom].resolve();
   }
 }

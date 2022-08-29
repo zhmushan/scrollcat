@@ -7,6 +7,7 @@ export type SceneEventType = "update" | "enter" | "leave";
 export type SceneEvent = {
   target: HTMLElement;
   progress: number;
+  scrollTop: number;
 };
 
 export interface SceneConfig {
@@ -30,8 +31,9 @@ export default class Scene {
   #state?: SceneState;
   #cfg: SceneConfig;
   #rect: DOMRect;
-  #duration: number;
+  duration: number;
   #playStart: number;
+  isActive = true;
   get #stateChanged(): boolean {
     return this.#prevState !== this.#state;
   }
@@ -71,7 +73,7 @@ export default class Scene {
     if (typeof duration === "string") {
       duration = (bottom - top) * p2n(duration);
     }
-    this.#duration = duration;
+    this.duration = duration;
 
     // #endregion updatePlayAndDuration
 
@@ -105,9 +107,11 @@ export default class Scene {
 
   update() {
     this.#preUpdate();
+    const scrollTop = this.#playStart - this.#rect.top;
     const event: SceneEvent = {
       target: this.#el,
-      progress: (this.#playStart - this.#rect.top) / this.#duration,
+      scrollTop,
+      progress: scrollTop / this.duration,
     };
     this.#trigger("update", event);
     if (this.#isEnter) {
@@ -115,5 +119,17 @@ export default class Scene {
     } else if (this.#isLeave) {
       this.#trigger("leave", event);
     }
+  }
+
+  removeSelf() {
+    this.#events.free();
+    this.#scroller.removeScene(this);
+  }
+
+  scrollTo(n: Percent | number) {
+    if (typeof n === "string") {
+      n = this.duration * p2n(n);
+    }
+    this.#scroller.scrollTo(this.#el.offsetTop - this.#playStart + n);
   }
 }
