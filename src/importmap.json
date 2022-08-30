@@ -1,5 +1,6 @@
 {
   "imports": {
+    "./consts": "./consts.ts",
     "./deferred": "./deferred.ts",
     "./queue": "./queue.ts",
     "./scene": "./scene.ts",

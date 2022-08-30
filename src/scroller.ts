@@ -1,5 +1,5 @@
 import Scene, { DefaultSceneConfig, type SceneConfig } from "./scene";
-import { p2n, type Percent } from "./utils";
+import { lockScroll, p2n, type Percent, unlockScroll } from "./utils";
 
 type ScrollDirection = "forward" | "reverse" | "paused";
 
@@ -9,12 +9,17 @@ export default class Scroller {
   #el?: HTMLElement;
   #scenes = new Set<Scene>();
   #prevScrollTop?: number;
+  #locker?: number;
 
   scrollTop?: number;
   direction?: ScrollDirection;
 
   get clientHeight(): number {
     return window.innerHeight || doc.documentElement.clientHeight;
+  }
+
+  get locked(): boolean {
+    return !!this.#locker;
   }
 
   #update() {
@@ -53,6 +58,7 @@ export default class Scroller {
     doc.addEventListener("scroll", this.#update.bind(this));
     this.destroy = () => {
       doc.removeEventListener("scroll", this.#update.bind(this));
+      this.unlock();
     };
   }
 
@@ -79,6 +85,27 @@ export default class Scroller {
     }
     if (this.#el === undefined) {
       window.scrollTo({ top: n });
+    }
+  }
+
+  lock(duration?: number): void {
+    if (this.#locker) {
+      this.unlock();
+    }
+    const currentScrollTop = this.scrollTop;
+    lockScroll(this.#el || doc.body);
+    this.#locker = setInterval(() => {
+      this.scrollTo(currentScrollTop);
+    }, 0);
+    if (duration) {
+      setTimeout(this.unlock.bind(this), duration);
+    }
+  }
+  unlock(): void {
+    unlockScroll(this.#el || doc.body);
+    if (this.#locker) {
+      clearInterval(this.#locker);
+      this.#locker = undefined;
     }
   }
 }

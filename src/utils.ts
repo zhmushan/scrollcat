@@ -1,11 +1,12 @@
+export { lockScroll, unlockScroll } from "./utils.scroll-lock";
+
 export type Percent = `${number}%`;
 
-const p2nMap = new Map<Percent, number>();
+const p2nMap: Record<Percent, number> = { "100%": 1 };
 export function p2n(p: Percent): number {
-  let n = p2nMap.get(p);
-  if (!n) {
-    n = Number(p.slice(0, p.length - 1)) / 100;
-    p2nMap.set(p, n);
+  if (p2nMap[p] !== undefined) {
+    return p2nMap[p];
   }
-  return n;
+
+  return p2nMap[p] = Number(p.slice(0, p.length - 1)) / 100;
 }

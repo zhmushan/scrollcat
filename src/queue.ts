@@ -36,7 +36,9 @@ export default class Queue<T> {
   }
 
   free(): void {
-    this.#freed = true;
-    this.#list[this.#bottom].resolve();
+    if (!this.#freed) {
+      this.#freed = true;
+      this.#list[this.#bottom].resolve();
+    }
   }
 }

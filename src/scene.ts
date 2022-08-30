@@ -9,6 +9,7 @@ export type SceneEvent = {
   progress: number;
   scrollTop: number;
 };
+export type SceneEmitter = Queue<[SceneEventType, SceneEvent]>;
 
 export interface SceneConfig {
   // Position to start playing this scene (relative to the viewport).
@@ -52,7 +53,7 @@ export default class Scene {
     return this.#stateChanged && this.#prevState === "during";
   }
 
-  get emitter() {
+  get emitter(): SceneEmitter {
     return this.#events;
   }
 
