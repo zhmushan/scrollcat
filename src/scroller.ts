@@ -86,6 +86,7 @@ export default class Scroller {
     if (this.#el === undefined) {
       window.scrollTo({ top: n });
     }
+    this.#update();
   }
 
   lock(duration?: number): void {
