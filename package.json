@@ -15,6 +15,12 @@
     "src"
   ],
   "description": "I want to catch the best scene of my life. The browser wants to, too.",
+  "homepage": "https://github.com/zhmushan/scrollcat",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhmushan/scrollcat"
+  },
   "scripts": {
     "fmt": "deno fmt",
     "lint": "deno lint",
