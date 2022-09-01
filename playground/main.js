@@ -1,6 +1,6 @@
 import { Scroller } from "https://unpkg.com/scrollcat";
 
-const life = new Scroller(document.body);
+const life = new Scroller();
 catchScene(document.querySelector("#a"));
 catchScene(document.querySelector("#b"));
 

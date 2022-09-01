@@ -1,5 +1,6 @@
 import Scene, { DefaultSceneConfig, type SceneConfig } from "./scene";
 import { lockScroll, p2n, type Percent, unlockScroll } from "./utils";
+import { type Deferred, deferred } from "./deferred";
 
 type ScrollDirection = "forward" | "reverse" | "paused";
 
@@ -9,7 +10,7 @@ export default class Scroller {
   #el?: HTMLElement;
   #scenes = new Set<Scene>();
   #prevScrollTop?: number;
-  #locker?: number;
+  #locker?: [timer: number, future: Deferred<void>];
 
   scrollTop?: number;
   direction?: ScrollDirection;
@@ -22,13 +23,15 @@ export default class Scroller {
     return !!this.#locker;
   }
 
+  get el(): HTMLElement {
+    return this.#el || doc.body;
+  }
+
   #update() {
     // #region updateScrollTop
 
     this.#prevScrollTop = this.scrollTop;
-    this.scrollTop = typeof this.#el?.scrollTop === "number"
-      ? this.#el.scrollTop
-      : window.scrollY;
+    this.scrollTop = window.scrollY;
 
     if (!this.#prevScrollTop) {
       this.#prevScrollTop = this.scrollTop;
@@ -83,29 +86,44 @@ export default class Scroller {
     if (typeof n === "string") {
       n = p2n(n);
     }
+
+    // TODO: Scroller can be a part of the page.
     if (this.#el === undefined) {
       window.scrollTo({ top: n });
     }
     this.#update();
   }
 
-  lock(duration?: number): void {
+  lock(duration?: number): Promise<void> {
     if (this.#locker) {
       this.unlock();
     }
+    const future = deferred<void>();
     const currentScrollTop = this.scrollTop;
-    lockScroll(this.#el || doc.body);
-    this.#locker = setInterval(() => {
-      this.scrollTo(currentScrollTop);
-    }, 0);
+    lockScroll(this.el);
+    let ticking = false;
+    this.#locker = [
+      setInterval(() => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            this.scrollTo(currentScrollTop);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, 0),
+      future,
+    ];
     if (duration) {
       setTimeout(this.unlock.bind(this), duration);
     }
+    return future;
   }
   unlock(): void {
-    unlockScroll(this.#el || doc.body);
+    unlockScroll(this.el);
     if (this.#locker) {
-      clearInterval(this.#locker);
+      clearInterval(this.#locker[0]);
+      this.#locker[1].resolve();
       this.#locker = undefined;
     }
   }
