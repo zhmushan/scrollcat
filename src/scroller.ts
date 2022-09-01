@@ -4,7 +4,7 @@ import { type Deferred, deferred } from "./deferred";
 
 type ScrollDirection = "forward" | "reverse" | "paused";
 
-const doc = window.document;
+const doc = self.document;
 
 export default class Scroller {
   #el?: HTMLElement;
@@ -16,7 +16,7 @@ export default class Scroller {
   direction?: ScrollDirection;
 
   get clientHeight(): number {
-    return window.innerHeight || doc.documentElement.clientHeight;
+    return self.innerHeight || doc.documentElement.clientHeight;
   }
 
   get locked(): boolean {
@@ -31,7 +31,7 @@ export default class Scroller {
     // #region updateScrollTop
 
     this.#prevScrollTop = this.scrollTop;
-    this.scrollTop = window.scrollY;
+    this.scrollTop = self.scrollY;
 
     if (!this.#prevScrollTop) {
       this.#prevScrollTop = this.scrollTop;
@@ -89,7 +89,7 @@ export default class Scroller {
 
     // TODO: Scroller can be a part of the page.
     if (this.#el === undefined) {
-      window.scrollTo({ top: n });
+      self.scrollTo({ top: n });
     }
     this.#update();
   }
@@ -105,7 +105,7 @@ export default class Scroller {
     this.#locker = [
       setInterval(() => {
         if (!ticking) {
-          window.requestAnimationFrame(() => {
+          self.requestAnimationFrame(() => {
             this.scrollTo(currentScrollTop);
             ticking = false;
           });
