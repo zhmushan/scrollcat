@@ -32,9 +32,9 @@ export default class Scene {
   #state?: SceneState;
   #cfg: SceneConfig;
   #rect: DOMRect;
-  duration: number;
   #playStart: number;
   isActive = true;
+  duration: number;
   get #stateChanged(): boolean {
     return this.#prevState !== this.#state;
   }
@@ -55,6 +55,14 @@ export default class Scene {
 
   get emitter(): SceneEmitter {
     return this.#events;
+  }
+
+  get scrollTop(): number {
+    return this.#playStart - this.#rect.top;
+  }
+
+  get progress(): number {
+    return this.scrollTop / this.duration;
   }
 
   #preUpdate() {
@@ -108,11 +116,10 @@ export default class Scene {
 
   update() {
     this.#preUpdate();
-    const scrollTop = this.#playStart - this.#rect.top;
     const event: SceneEvent = {
       target: this.#el,
-      scrollTop,
-      progress: scrollTop / this.duration,
+      scrollTop: this.scrollTop,
+      progress: this.progress,
     };
     this.#trigger("update", event);
     if (this.#isEnter) {
@@ -123,14 +130,14 @@ export default class Scene {
   }
 
   removeSelf() {
-    this.#events.free();
+    this.#events.destroy();
     this.#scroller.removeScene(this);
   }
 
-  scrollTo(n: Percent | number) {
+  scrollTo(n: Percent | number, cfg?: ScrollOptions) {
     if (typeof n === "string") {
       n = this.duration * p2n(n);
     }
-    this.#scroller.scrollTo(this.#el.offsetTop - this.#playStart + n);
+    this.#scroller.scrollTo(this.#el.offsetTop - this.#playStart + n, cfg);
   }
 }

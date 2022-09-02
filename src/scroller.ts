@@ -82,14 +82,14 @@ export default class Scroller {
     }
   }
 
-  scrollTo(n: Percent | number): void {
+  scrollTo(n: Percent | number, cfg: ScrollOptions = {}): void {
     if (typeof n === "string") {
       n = p2n(n);
     }
 
     // TODO: Scroller can be a part of the page.
     if (this.#el === undefined) {
-      self.scrollTo({ top: n });
+      self.scrollTo({ top: n, ...cfg });
     }
     this.#update();
   }
