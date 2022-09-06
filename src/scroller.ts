@@ -61,6 +61,9 @@ export default class Scroller {
     doc.addEventListener("scroll", this.#update.bind(this));
     this.destroy = () => {
       doc.removeEventListener("scroll", this.#update.bind(this));
+      for (const scene of this.#scenes) {
+        this.removeScene(scene);
+      }
       this.unlock();
     };
   }
