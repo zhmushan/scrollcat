@@ -28,6 +28,7 @@ export default class Scene {
   #scroller: Scroller;
   #el: HTMLElement;
   #events = new Queue<[SceneEventType, SceneEvent]>();
+  #eventsMap = new Map<SceneEventType, Set<(ev: SceneEvent) => void>>();
   #prevState?: SceneState;
   #state?: SceneState;
   #cfg: SceneConfig;
@@ -106,6 +107,12 @@ export default class Scene {
 
   #trigger(type: SceneEventType, event: SceneEvent): void {
     this.#events.push([type, event]);
+    const cbs = this.#eventsMap.get(type);
+    if (cbs) {
+      for (const cb of cbs) {
+        cb(event);
+      }
+    }
   }
 
   constructor(scroller: Scroller, el: HTMLElement, cfg: SceneConfig) {
@@ -139,5 +146,36 @@ export default class Scene {
       n = this.duration * p2n(n);
     }
     this.#scroller.scrollTo(this.#el.offsetTop - this.#playStart + n, cfg);
+  }
+
+  on(eventType: SceneEventType, cb: (ev: SceneEvent) => void) {
+    let cbs = this.#eventsMap.get(eventType);
+    if (!cbs) {
+      cbs = new Set();
+      this.#eventsMap.set(eventType, cbs);
+    }
+    cbs.add(cb);
+  }
+
+  off(eventType: SceneEventType, cb?: (ev: SceneEvent) => void) {
+    const cbs = this.#eventsMap.get(eventType);
+    if (!cbs?.size) {
+      return;
+    }
+
+    if (cb) {
+      cbs.delete(cb);
+    } else {
+      cbs.clear();
+    }
+  }
+
+  once(eventType: SceneEventType, cb: (ev: SceneEvent) => void) {
+    const handler = (ev: SceneEvent) => {
+      cb(ev);
+      this.off(eventType, handler);
+    };
+
+    this.on(eventType, handler);
   }
 }
