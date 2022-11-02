@@ -66,6 +66,10 @@ export default class Scene {
     return this.scrollTop / this.duration;
   }
 
+  get state(): SceneState {
+    return this.#state!;
+  }
+
   #preUpdate() {
     const clientHeight = this.#scroller.clientHeight;
     const rect = this.#rect = this.#el.getBoundingClientRect();
@@ -119,6 +123,7 @@ export default class Scene {
     this.#scroller = scroller;
     this.#el = el;
     this.#cfg = cfg;
+    this.#preUpdate();
   }
 
   update() {
